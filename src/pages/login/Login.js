@@ -1,17 +1,14 @@
-import { useContext } from 'react';
-import { useState } from 'react'
-import { AuthContext } from '../../context/AuthContext';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
 import "./login.css";
-import { useNavigate } from 'react-router-dom';
-
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    username: undefined,
-    password: undefined,
+    username: '',
+    password: '',
   });
-  
 
   const { loading, error, dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,19 +16,14 @@ const Login = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
+
     try {
       const res = await axios.post("http://localhost:3000/api/auth/login", credentials);
 
-      // Verificamos si la respuesta contiene el token y los detalles del usuario
       if (res.data && res.data.token) {
-        const { token, ...otherDetails } = res.data; // Separar token y detalles del usuario
-
-        // Guardamos el token en sesion Storage
+        const { token, ...otherDetails } = res.data;
         sessionStorage.setItem("access_token", token);
-        
-        // Enviamos los detalles del usuario al contexto de autenticación
         dispatch({ type: "LOGIN_SUCCESS", payload: otherDetails });
-
         navigate("/");
       }
     } catch (err) {
@@ -40,34 +32,38 @@ const Login = () => {
   };
 
   const handleChange = (e) => {
-    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    const { id, value } = e.target;
+    setCredentials((prev) => ({ ...prev, [id]: value }));
   };
 
   return (
     <div className="login">
-        <div className="lContainer">
-          <input
-            type="text"
-            placeholder="username"
-            id="username"
-            onChange={handleChange}
-            className="lInput"
-          />
-          <input
-            type="password"
-            placeholder="password"
-            id="password"
-            onChange={handleChange}
-            className="lInput"
-          />
-          <span onClick={e => { navigate("/register")}}>Sign in</span>
-          <button disabled={loading} onClick={handleClick} className="lButton">
-            Login
-          </button>
-
-          {error && <span>{error.message}</span>}
-        </div>
-    
+      <div className="lContainer">
+        <h1>Login</h1>
+        <input
+          type="text"
+          placeholder="Username"
+          id="username"
+          onChange={handleChange}
+          className="lInput"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          id="password"
+          onChange={handleChange}
+          className="lInput"
+        />
+        <Link to="/register" className="signInLink">Sign up</Link>
+        <button
+          disabled={loading}
+          onClick={handleClick}
+          className="lButton"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+        {error && <span className="errorText">{error.message}</span>}
+      </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 const Tags = () => {
-    const {data,loading,error} = useFetch("http://localhost:3300/api/teachers");
+    const {data,loading,error} = useFetch("http://localhost:3000/api/teachers");
     return(
         <>
             {data.map((dpto,index) => { 

@@ -1,35 +1,78 @@
+
 .login {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .lContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .lInput{
-    height: 30px;
-    padding: 10px;
-  }
-  
-  .lButton {
-    border: none;
-    padding: 10px 20px;
-    background-color: #0071c2;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .lButton:disabled{
-    background-color: #0071c28c;
-    cursor: not-allowed;
-  }
-  h2{
-    font-size: 1px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f9f9f9;
+}
+
+.lContainer {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.lInput {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.lInput:focus {
+  border-color: #007bff;
+}
+
+.signInLink {
+  display: block;
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.signInLink:hover {
+  color: #0056b3;
+}
+
+.lButton {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.lButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.lButton:hover {
+  background-color: #0056b3;
+}
+
+.errorText {
+  display: block;
+  margin-top: 10px;
+  color: #dc3545;
+  font-size: 14px;
+}

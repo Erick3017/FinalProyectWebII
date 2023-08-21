@@ -1,45 +1,47 @@
+import React, { useEffect, useState } from "react";
 import DataTable from 'react-data-table-component';
-import { useEffect, useState } from "react";
-import useFetch from "../../hooks/useFetch";
 import { Link } from 'react-router-dom';
 import axios from "../../axiosConfig";
+import useFetch from "../../hooks/useFetch";
+import "./datatableusers.css";
 
 const DataTableUsers = () => {
+  // Estado para almacenar la lista de usuarios
   const [list, setList] = useState([]);
-  const { data, loading, error } = useFetch("http://localhost:3300/api/users");
+  // Obtener datos y estado de carga usando el hook useFetch
+  const { data, loading } = useFetch("http://localhost:3000/api/users");
 
+  // Actualizar la lista cuando los datos cambien
   useEffect(() => {
     setList(data);
   }, [data]);
 
+  // Manejar el botón de eliminar
   const handleDelete = async (id) => {
-    console.log(id);
     try {
-      await axios.delete(`http://localhost:3300/api/users/${id}`);
-      setList(list.filter((item) => item._id !== id));
-    } catch (err) { }
+      await axios.delete(`http://localhost:3000/api/users/${id}`);
+      // Actualizar la lista eliminando el usuario con el id correspondiente
+      setList(prevList => prevList.filter(item => item._id !== id));
+    } catch (err) {
+      console.error("Error deleting user:", err);
+    }
   };
 
-    const handelInput = (e) => {
-    e.persist();
-    // Filtrar los datos según el término de búsqueda
+  // Manejar la búsqueda de usuarios
+  const handleSearch = (e) => {
     const searchTerm = e.target.value.toLowerCase();
-    const filteredList = data.filter(item => (
+    const filteredList = data.filter(item =>
       item.username.toLowerCase().includes(searchTerm) ||
       item.email.toLowerCase().includes(searchTerm)
-    ));
+    );
     setList(filteredList);
-  }
+  };
 
+  // Definir las columnas para la tabla
   const columns = [
     {
       name: 'Username',
       selector: 'username',
-      sortable: true,
-    },
-    {
-      name: 'Password',
-      selector: 'password',
       sortable: true,
     },
     {
@@ -51,47 +53,59 @@ const DataTableUsers = () => {
       name: 'Is Verify',
       selector: 'isVerify',
       sortable: true,
-      cell: row => row.isVerify ? 'Verificado' : 'Sin verificar',
+      // Mostrar 'Verificado' o 'Sin verificar' en función del valor
+      cell: row => (row.isVerify ? 'Verificado' : 'Sin verificar'),
     },
     {
       name: 'Is Admin',
       selector: 'isAdmin',
       sortable: true,
-      cell: row => row.isAdmin ? 'Administrador' : 'Usuario',
+      // Mostrar 'Administrador' o 'Usuario' en función del valor
+      cell: row => (row.isAdmin ? 'Administrador' : 'Usuario'),
     },
     {
       name: 'Edit',
-      cell: row => <Link to={`/update/${row._id}`}><button>Edit</button></Link>,
+      // Celda con enlace de edición a la página de actualización
+      cell: row => <Link to={`/update/${row._id}`} className="edit-link">Editar</Link>,
       button: true,
     },
     {
       name: 'Delete',
-      cell: row => <button onClick={() => handleDelete(row._id)}>Delete</button>,
+      // Celda con botón de eliminar
+      cell: row => (
+        <button className="delete-button" onClick={() => handleDelete(row._id)}>
+          Eliminar
+        </button>
+      ),
       button: true,
     },
   ];
 
   return (
-    <div>
-      {loading ? ("Loading please wait") : (
-        <div>
-          <div className="container">
-            <h2>Table of users</h2>
-            <Link to="/create"><button className="btn btn-primary">Add users</button></Link>
-            <div className="mt-3">
-              <input type="text" className="form-control" placeholder="Search.." name="search" onChange={handelInput} />
-            </div>
-          </div>
-          <div>
-            <DataTable
-              columns={columns}
-              data={list}
-              pagination
-              highlightOnHover
-            />
-          </div>
+    <div className="datatable-users-container">
+      <div className="datatable-users-header">
+        {/* Título y enlace para agregar usuarios */}
+        <h2>Tabla de Usuarios</h2>
+        <Link to="/create" className="btn btn-primary">Agregar Usuarios</Link>
+        {/* Barra de búsqueda */}
+        <div className="search-container">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Buscar..."
+            name="search"
+            onChange={handleSearch}
+          />
         </div>
-      )}
+      </div>
+      <div className="datatable-users-table">
+        {/* Mostrar mensaje de carga o la tabla */}
+        {loading ? (
+          <p>Cargando, por favor espera...</p>
+        ) : (
+          <DataTable columns={columns} data={list} pagination highlightOnHover />
+        )}
+      </div>
     </div>
   );
 }

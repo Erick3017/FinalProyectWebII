@@ -1,83 +1,79 @@
-
-import { useState, useContext, CSSProperties } from 'react'
-import { AuthContext } from '../../context/AuthContext';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import "./register.css";
-import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
 import Spinner from '../../components/spinner/Spinner';
-
+import "./register.css";
 
 const Register = () => {
   const [credentials, setCredentials] = useState({
-    username: undefined,
-    password: undefined,
-    email: undefined,
+    username: '',
+    password: '',
+    email: '',
   });
 
-  const [susseces, setSusseces] = useState(false)
-  const { loading, error, dispatch } = useContext(AuthContext);
+  const [success, setSuccess] = useState(false);
+  const { loading, error } = useContext(AuthContext);
   const navigate = useNavigate();
-
 
   const handleClick = async (e) => {
     e.preventDefault();
+    
     try {
       const res = await axios.post("http://localhost:3000/api/auth/register", credentials);
-
-      // Verificamos si la respuesta contiene el token y los detalles del usuario
-      console.log(res.data);
       
-      setSusseces(!susseces);
-
+      if (res.data) {
+        setSuccess(true);
+      }
     } catch (err) {
-
+      // Manejo de error si es necesario
     }
   };
 
   const handleChange = (e) => {
-    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    const { id, value } = e.target;
+    setCredentials((prev) => ({ ...prev, [id]: value }));
   };
 
   return (
-    <div className="login">
-      {susseces ? (
-        <>
-          <Spinner message={"Please....wait to be verified"}></Spinner>
-
-        </>
+    <div className="register">
+      {success ? (
+        <Spinner message="Please wait to be verified" />
       ) : (
-
-        <div className="lContainer">
+        <div className="rContainer">
+          <h1>Register</h1>
           <input
             type="text"
-            placeholder="username"
+            placeholder="Username"
             id="username"
             onChange={handleChange}
-            className="lInput"
+            className="rInput"
           />
           <input
             type="email"
-            placeholder="email"
+            placeholder="Email"
             id="email"
             onChange={handleChange}
-            className="lInput"
+            className="rInput"
           />
           <input
             type="password"
-            placeholder="password"
+            placeholder="Password"
             id="password"
             onChange={handleChange}
-            className="lInput"
+            className="rInput"
           />
-          <span onClick={e => { navigate("/login") }}>Log in</span>
-          <button disabled={loading} onClick={handleClick} className="lButton">
-            Register
+          <Link to="/login" className="loginLink">Log in</Link>
+          <button
+            disabled={loading}
+            onClick={handleClick}
+            className="rButton"
+          >
+            {loading ? "Registering..." : "Register"}
           </button>
-
-          {error && <span>{error.message}</span>}
+          {error && <span className="errorText">{error.message}</span>}
         </div>
       )}
-
     </div>
   );
 };
