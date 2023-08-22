@@ -10,15 +10,21 @@ const Login = () => {
     password: '',
   });
 
+  const [verificationCode, setVerificationCode] = useState(''); // Nuevo estado para el código de verificación
+
   const { loading, error, dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleClick = async (e) => {
+    setVerificationCode(e.target.value);
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
 
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/login", credentials);
+      const res = await axios.post("http://localhost:3000/api/auth/login", {
+        ...credentials,
+        verificationCode, // Enviar el código de verificación
+      });
 
       if (res.data && res.data.token) {
         const { token, ...otherDetails } = res.data;
@@ -36,25 +42,36 @@ const Login = () => {
     setCredentials((prev) => ({ ...prev, [id]: value }));
   };
 
+  const handleVerificationChange = (e) => {
+    setVerificationCode(e.target.value);
+  };
+
   return (
     <div className="login">
       <div className="lContainer">
         <h1>Login</h1>
         <input
           type="text"
-          placeholder="Username"
+          placeholder="Usuario"
           id="username"
           onChange={handleChange}
           className="lInput"
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Constraseña"
           id="password"
           onChange={handleChange}
           className="lInput"
         />
-        <Link to="/register" className="signInLink">Sign up</Link>
+        <input
+          type="text"
+          placeholder="Código de verificación"
+          value={verificationCode}
+          onChange={handleVerificationChange}
+          className="lInput"
+        />
+        <Link to="/register" className="signInLink">Registrarse</Link>
         <button
           disabled={loading}
           onClick={handleClick}

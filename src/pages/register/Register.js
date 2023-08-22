@@ -10,6 +10,7 @@ const Register = () => {
     username: '',
     password: '',
     email: '',
+    telefono: '',
   });
 
   const [success, setSuccess] = useState(false);
@@ -41,35 +42,42 @@ const Register = () => {
         <Spinner message="Please wait to be verified" />
       ) : (
         <div className="rContainer">
-          <h1>Register</h1>
+          <h1>Registro</h1>
           <input
             type="text"
-            placeholder="Username"
+            placeholder="Usuario"
             id="username"
             onChange={handleChange}
             className="rInput"
           />
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Correo"
             id="email"
             onChange={handleChange}
             className="rInput"
           />
           <input
+            type="telefono"
+            placeholder="Telefono"
+            id="telefono"
+            onChange={handleChange}
+            className="rInput"
+          />
+          <input
             type="password"
-            placeholder="Password"
+            placeholder="Contraseña"
             id="password"
             onChange={handleChange}
             className="rInput"
           />
-          <Link to="/login" className="loginLink">Log in</Link>
+          <Link to="/login" className="loginLink">Iniciar Sesión</Link>
           <button
             disabled={loading}
             onClick={handleClick}
             className="rButton"
           >
-            {loading ? "Registering..." : "Register"}
+            {loading ? "Registering..." : "Registrar"}
           </button>
           {error && <span className="errorText">{error.message}</span>}
         </div>
