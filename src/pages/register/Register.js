@@ -10,7 +10,7 @@ const Register = () => {
     username: '',
     password: '',
     email: '',
-    telefono: '',
+    phoneNumber: '',
   });
 
   const [success, setSuccess] = useState(false);
@@ -19,10 +19,10 @@ const Register = () => {
 
   const handleClick = async (e) => {
     e.preventDefault();
-    
+
     try {
       const res = await axios.post("http://localhost:3000/api/auth/register", credentials);
-      
+
       if (res.data) {
         setSuccess(true);
       }
@@ -39,7 +39,7 @@ const Register = () => {
   return (
     <div className="register">
       {success ? (
-        <Spinner message="Please wait to be verified" />
+        <Spinner message="Please wait to be verified, check your" />
       ) : (
         <div className="rContainer">
           <h1>Registro</h1>
@@ -58,9 +58,9 @@ const Register = () => {
             className="rInput"
           />
           <input
-            type="telefono"
-            placeholder="Telefono"
-            id="telefono"
+            type="tel"
+            placeholder="Teléfono"
+            id="phoneNumber"
             onChange={handleChange}
             className="rInput"
           />

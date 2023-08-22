@@ -10,20 +10,17 @@ const Login = () => {
     password: '',
   });
 
-  const [verificationCode, setVerificationCode] = useState(''); // Nuevo estado para el código de verificación
-
   const { loading, error, dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleClick = async (e) => {
-    setVerificationCode(e.target.value);
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
 
     try {
       const res = await axios.post("http://localhost:3000/api/auth/login", {
         ...credentials,
-        verificationCode, // Enviar el código de verificación
+        otp: credentials.otp,
       });
 
       if (res.data && res.data.token) {
@@ -42,9 +39,6 @@ const Login = () => {
     setCredentials((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleVerificationChange = (e) => {
-    setVerificationCode(e.target.value);
-  };
 
   return (
     <div className="login">
@@ -66,9 +60,9 @@ const Login = () => {
         />
         <input
           type="text"
-          placeholder="Código de verificación"
-          value={verificationCode}
-          onChange={handleVerificationChange}
+          placeholder="Código OTP"
+          id="otp"
+          onChange={handleChange}
           className="lInput"
         />
         <Link to="/register" className="signInLink">Registrarse</Link>
